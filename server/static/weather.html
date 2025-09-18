@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Weather</title>
+</head>
+<body>
+  <h1>Weather for <span id="location"></span></h1>
+  <div id="info">Loading...</div>
+
+  <script>
+    const loc = window.location.pathname.slice(1); // remove leading /
+    document.getElementById('location').textContent = loc;
+
+    fetch(`/api/weather/${loc}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) {
+          document.getElementById('info').textContent = data.error;
+        } else {
+          const w = data.weather;
+          document.getElementById('info').innerHTML = `
+            Temperature: ${w.temperature} °C <br>
+            Forecast: ${w.forecast} <br>
+            Wind: ${w.windSpeed} ${w.windDirection}
+          `;
+        }
+      })
+      .catch(err => {
+        document.getElementById('info').textContent = 'Error fetching weather';
+      });
+  </script>
+</body>
+</html>
